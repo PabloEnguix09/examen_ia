@@ -1,42 +1,53 @@
-(deffacts problema (robot cajas maximo 3 actual 0 palet pedidos pedidos caja naranjas 2 caja manzanas 3 caja uvas 1 palets palet linea palet naranjas palet manzanas palet caquis palet uvas))
+(deffacts problema (robot cajas maximo 3 actual 0 palet pedidos pedidosLinea caja naranjas 2 caja manzanas 3 caja uvas 1 linea naranjas manzanas caquis uvas))
 
+
+(defrule mover-robot-linea
+    (robot cajas $?cajas maximo 3 actual ?actual palet ?paletActual $?resto)
+    =>
+    (assert(robot cajas $?cajas maximo 3 actual ?actual palet pedidos $?resto))
+)
 (defrule coger-caja
-    (robot cajas $?cajas maximo 3 actual ?actual palet pedidos $?ini caja ?tipoCaja ?numeroCajas $?fin)
+    (robot cajas $?cajas maximo 3 actual ?actual palet pedidos pedidosLinea $?ini caja ?tipoCaja ?numeroCajas $?fin linea $?resto)
     (test (<= (+ ?actual ?numeroCajas) 3))
     =>
-    (assert (robot cajas $?cajas caja ?tipoCaja ?numeroCajas maximo 3 actual (+ ?actual ?numeroCajas) palet pedidos $?ini $?fin))
+    (assert (robot cajas ?tipoCaja ?numeroCajas maximo 3 actual (+ ?actual ?numeroCajas) palet pedidos pedidosLinea $?ini $?fin linea $?resto))
 )
 
 (defrule mover-robot-naranjas
-    (robot cajas $?cajas naranjas ?cuantas $?restoCajas maximo 3 actual ?actual palet ?paletActual $?resto)
+    (robot cajas naranjas ?cuantas maximo 3 actual ?actual palet ?paletActual $?resto)
     =>
-    (assert(robot cajas $?cajas naranjas ?cuantas $?restoCajas maximo 3 actual ?actual palet naranjas $?resto))
+    (assert(robot cajas naranjas ?cuantas  maximo 3 actual ?actual palet naranjas $?resto))
 )
 (defrule dejar-caja-naranjas
-    (robot cajas $?cajas naranjas ?cuantas $?restoCajas maximo 3 actual ?actual palet naranjas pedidos $?pedidos palets $?ini palet naranjas $?fin)
+    (robot cajas naranjas ?cuantas maximo 3 actual ?actual palet naranjas pedidosLinea $?pedidos linea $?ini naranjas $?fin)
     =>
-    (assert (robot cajas $?cajas $?restoCajas maximo 3 actual (- ?actual ?cuantas) palet naranjas pedidos $?pedidos palets palet pedidos palet naranjas ?cuantas palet manzanas palet caquis palet uva))
+    (assert (robot cajas maximo 3 actual (- ?actual ?cuantas) palet naranjas pedidosLinea $?pedidos linea $?ini naranjas ?cuantas $?fin))
 )
 
 (defrule mover-robot-manzanas
-    (robot cajas $?cajas manzanas ?cuantas $?restoCajas maximo 3 actual ?actual palet ?paletActual $?resto)
+    (robot cajas manzanas ?cuantas maximo 3 actual ?actual palet ?paletActual $?resto)
     =>
-    (assert(robot cajas $?cajas manzanas ?cuantas $?restoCajas maximo 3 actual ?actual palet manzanas $?resto))
+    (assert(robot cajas manzanas ?cuantas maximo 3 actual ?actual palet manzanas $?resto))
 )
 (defrule dejar-caja-manzanas
-    (robot cajas $?cajas manzanas ?cuantas $?restoCajas maximo 3 actual ?actual palet manzanas pedidos $?pedidos palets $?ini palet manzanas $?fin)
+    (robot cajas manzanas ?cuantas maximo 3 actual ?actual palet manzanas pedidosLinea $?pedidos linea $?ini manzanas $?fin)
     =>
-    (assert (robot cajas $?cajas $?restoCajas maximo 3 actual (- ?actual ?cuantas) palet manzanas pedidos $?pedidos palets $?ini palet manzanas ?cuantas $?fin))
+    (assert (robot cajas maximo 3 actual (- ?actual ?cuantas) palet manzanas pedidosLinea $?pedidos linea $?ini manzanas ?cuantas $?fin))
 )
 
 (defrule mover-robot-uvas
-    (robot cajas $?cajas uvas ?cuantas $?restoCajas maximo 3 actual ?actual palet ?paletActual $?resto)
+    (robot cajas uvas ?cuantas maximo 3 actual ?actual palet ?paletActual $?resto)
     =>
-    (assert(robot cajas $?cajas uvas ?cuantas $?restoCajas maximo 3 actual ?actual palet uvas $?resto))
+    (assert(robot cajas uvas ?cuantas maximo 3 actual ?actual palet uvas $?resto))
 )
 (defrule dejar-caja-uvas
-    (robot cajas $?cajas uvas ?cuantas $?restoCajas maximo 3 actual ?actual palet uvas pedidos $?pedidos palets $?ini palet uvas $?fin)
-
+    (robot cajas uvas ?cuantas maximo 3 actual ?actual palet uvas pedidosLinea $?pedidos linea $?ini uvas $?fin)
     =>
-    (assert (robot cajas $?cajas $?restoCajas maximo 3 actual (- ?actual ?cuantas) palet uvas pedidos $?pedidos palets $?ini palet uvas ?cuantas $?fin))
+    (assert (robot cajas maximo 3 actual (- ?actual ?cuantas) palet uvas pedidosLinea $?pedidos linea $?ini uvas ?cuantas $?fin))
+)
+
+(defrule meta
+    (robot cajas maximo 3 actual 0 palet ?paletActual pedidosLinea linea $?cajasOrdenadas)
+    => 
+    (halt)
 )
